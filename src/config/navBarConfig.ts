@@ -70,7 +70,8 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		],
 	});
 
-	// 自定义导航栏链接
+	// 自定义导航栏链接（已隐藏“链接”Tab，需要恢复时取消下方注释）
+	/*
 	links.push({
 		name: "链接",
 		url: "#",
@@ -103,6 +104,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			},
 		],
 	});
+	*/
 
 	// 文档链接
 	// links.push({
