@@ -274,7 +274,7 @@ export const en: Translation = {
 	[Key.wallpaperCarousel]: "Wallpaper Carousel",
 	[Key.wavesAnimation]: "Waves Animation",
 	[Key.gradientTransition]: "Gradient Transition",
-	[Key.sakuraEffect]: "Sakura Effect",
+	[Key.sakuraEffect]: "Particle Effect",
 	[Key.effectsSettings]: "Effects Settings",
 	[Key.overlaySettings]: "Transparency Settings",
 	[Key.overlayOpacity]: "Wallpaper Opacity",

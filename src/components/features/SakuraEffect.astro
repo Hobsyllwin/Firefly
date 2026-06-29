@@ -8,190 +8,141 @@ const config = sakuraConfig;
 		let windowWidth = window.innerWidth;
 		let windowHeight = window.innerHeight;
 
-		// 樱花对象类
-		class Sakura {
-			constructor(x, y, s, r, a, fn, idx, img, limitArray, config) {
-				this.x = x;
-				this.y = y;
-				this.s = s;
-				this.r = r;
-				this.a = a;
-				this.fn = fn;
-				this.idx = idx;
-				this.img = img;
-				this.limitArray = limitArray;
+		// 废土粒子类：灰烬尘埃(下沉) + 余烬火星(上升、发光、闪烁)
+		class Particle {
+			constructor(config) {
 				this.config = config;
+				this.reset(true);
 			}
 
-			draw(cxt) {
-				cxt.save();
-				cxt.translate(this.x, this.y);
-				cxt.rotate(this.r);
-				cxt.globalAlpha = this.a;
-				cxt.drawImage(this.img, 0, 0, 40 * this.s, 40 * this.s);
-				cxt.restore();
-			}
+			// initial=true 时铺满全屏(首次生成)，否则从入场边缘生成
+			reset(initial) {
+				const c = this.config;
+				// 约 16% 概率为"余烬火星"，其余为"灰烬尘埃"
+				this.ember = Math.random() < 0.16;
 
-			update() {
-				this.x = this.fn.x(this.x, this.y);
-				this.y = this.fn.y(this.y, this.y);
-				this.r = this.fn.r(this.r);
-				this.a = this.fn.a(this.a);
-				// 如果樱花越界，重新调整位置
-				if (
-					this.x > windowWidth ||
-					this.x < 0 ||
-					this.y > windowHeight ||
-					this.y < 0 ||
-					this.a <= 0
-				) {
-					// 如果樱花不做限制
-					if (this.limitArray[this.idx] === -1) {
-						this.resetPosition();
-					}
-					// 否则樱花有限制
-					else {
-						if (this.limitArray[this.idx] > 0) {
-							this.resetPosition();
-							this.limitArray[this.idx]--;
-						}
-					}
-				}
-			}
+				// 半径(px)，复用 size.min/max 作为像素范围
+				const sMin = c.size?.min ?? 0.6;
+				const sMax = c.size?.max ?? 2.6;
+				this.radius = sMin + Math.random() * (sMax - sMin);
+				// 火星略大一点
+				if (this.ember) this.radius *= 1.3;
 
-			resetPosition() {
-				this.r = getRandom('fnr', this.config);
-				if (Math.random() > 0.4) {
-					this.x = getRandom('x', this.config);
-					this.y = 0;
-					this.s = getRandom('s', this.config);
-					this.r = getRandom('r', this.config);
-					this.a = getRandom('a', this.config);
+				// 基础透明度，复用 opacity.min/max
+				const aMin = c.opacity?.min ?? 0.1;
+				const aMax = c.opacity?.max ?? 0.6;
+				this.baseAlpha = aMin + Math.random() * (aMax - aMin);
+				this.alpha = this.baseAlpha;
+
+				// 水平漂移 + 正弦摆动
+				const hMin = c.speed?.horizontal?.min ?? -0.3;
+				const hMax = c.speed?.horizontal?.max ?? 0.3;
+				this.vx = hMin + Math.random() * (hMax - hMin);
+				this.swayPhase = Math.random() * Math.PI * 2;
+				this.swaySpeed = 0.005 + Math.random() * 0.015;
+				this.swayAmp = 0.15 + Math.random() * 0.35;
+
+				// 垂直速度：尘埃下沉，火星上升
+				const vMin = c.speed?.vertical?.min ?? 0.15;
+				const vMax = c.speed?.vertical?.max ?? 0.5;
+				if (this.ember) {
+					this.vy = -(0.12 + Math.random() * 0.35); // 上升
 				} else {
-					this.x = windowWidth;
-					this.y = getRandom('y', this.config);
-					this.s = getRandom('s', this.config);
-					this.r = getRandom('r', this.config);
-					this.a = getRandom('a', this.config);
+					this.vy = vMin + Math.random() * (vMax - vMin); // 下沉
 				}
-			}
-		}
 
-		// 樱花列表类
-		class SakuraList {
-			constructor() {
-				this.list = [];
-			}
+				// 火星闪烁
+				this.flickerPhase = Math.random() * Math.PI * 2;
+				this.flickerSpeed = 0.04 + Math.random() * 0.06;
 
-			push(sakura) {
-				this.list.push(sakura);
+				// 颜色：尘埃=暗灰褐，火星=琥珀橙
+				if (this.ember) {
+					const embers = ['255,150,60', '255,120,40', '255,180,90'];
+					this.color = embers[(Math.random() * embers.length) | 0];
+				} else {
+					const ash = ['170,158,138', '140,134,124', '120,112,98', '150,140,120'];
+					this.color = ash[(Math.random() * ash.length) | 0];
+				}
+
+				// 位置
+				if (initial) {
+					this.x = Math.random() * windowWidth;
+					this.y = Math.random() * windowHeight;
+				} else if (this.ember) {
+					// 火星从底部入场
+					this.x = Math.random() * windowWidth;
+					this.y = windowHeight + 10;
+				} else {
+					// 尘埃从顶部/侧边入场
+					if (Math.random() > 0.35) {
+						this.x = Math.random() * windowWidth;
+						this.y = -10;
+					} else {
+						this.x = this.vx >= 0 ? -10 : windowWidth + 10;
+						this.y = Math.random() * windowHeight * 0.6;
+					}
+				}
 			}
 
 			update() {
-				for (let i = 0, len = this.list.length; i < len; i++) {
-					this.list[i].update();
+				this.swayPhase += this.swaySpeed;
+				this.x += this.vx + Math.sin(this.swayPhase) * this.swayAmp;
+				this.y += this.vy;
+
+				if (this.ember) {
+					this.flickerPhase += this.flickerSpeed;
+					this.alpha = this.baseAlpha * (0.5 + 0.5 * Math.abs(Math.sin(this.flickerPhase)));
+				} else {
+					this.alpha = this.baseAlpha;
+				}
+
+				// 出界重生
+				if (
+					this.y > windowHeight + 12 ||
+					this.y < -12 ||
+					this.x < -12 ||
+					this.x > windowWidth + 12
+				) {
+					this.reset(false);
 				}
 			}
 
-			draw(cxt) {
-				for (let i = 0, len = this.list.length; i < len; i++) {
-					this.list[i].draw(cxt);
+			draw(ctx) {
+				ctx.save();
+				ctx.globalAlpha = Math.max(0, Math.min(1, this.alpha));
+				if (this.ember) {
+					ctx.shadowBlur = this.radius * 5;
+					ctx.shadowColor = 'rgba(255,140,50,0.9)';
 				}
-			}
-
-			get(i) {
-				return this.list[i];
-			}
-
-			size() {
-				return this.list.length;
+				ctx.fillStyle = `rgb(${this.color})`;
+				ctx.beginPath();
+				ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+				ctx.fill();
+				ctx.restore();
 			}
 		}
 
-		// 获取随机值的函数
-		function getRandom(option, config) {
-			let ret;
-			let random;
-
-			switch (option) {
-				case 'x':
-					ret = Math.random() * windowWidth;
-					break;
-				case 'y':
-					ret = Math.random() * windowHeight;
-					break;
-				case 's':
-					ret = config.size.min + Math.random() * (config.size.max - config.size.min);
-					break;
-				case 'r':
-					ret = Math.random() * 6;
-					break;
-				case 'a':
-					ret = config.opacity.min + Math.random() * (config.opacity.max - config.opacity.min);
-					break;
-				case 'fnx':
-					random = config.speed.horizontal.min + Math.random() * (config.speed.horizontal.max - config.speed.horizontal.min);
-					ret = function (x, _y) {
-						return x + random;
-					};
-					break;
-				case 'fny':
-					random = config.speed.vertical.min + Math.random() * (config.speed.vertical.max - config.speed.vertical.min);
-					ret = function (_x, y) {
-						return y + random;
-					};
-					break;
-				case 'fnr':
-					ret = function (r) {
-						return r + config.speed.rotation;
-					};
-					break;
-				case 'fna':
-					ret = function (alpha) {
-						return alpha - config.speed.fadeSpeed * 0.01;
-					};
-					break;
-			}
-			return ret;
-		}
-
-		// 樱花管理器类
+		// 粒子管理器
 		class SakuraManager {
 			constructor(config) {
 				this.config = config;
 				this.canvas = null;
 				this.ctx = null;
-				this.sakuraList = null;
+				this.particles = [];
 				this.animationId = null;
-				this.img = null;
 				this.isRunning = false;
 			}
 
-			// 初始化樱花特效
-			async init() {
+			init() {
 				if (!this.config.enable || this.isRunning) {
 					return;
 				}
-
-				// 创建图片对象
-				this.img = new Image();
-				this.img.src = '/assets/images/effects/sakura.png'; // 使用樱花图片
-
-				// 等待图片加载完成
-				await new Promise((resolve, reject) => {
-					if (this.img) {
-						this.img.onload = () => resolve();
-						this.img.onerror = () => reject(new Error('Failed to load sakura image'));
-					}
-				});
-
 				this.createCanvas();
-				this.createSakuraList();
+				this.createParticles();
 				this.startAnimation();
 				this.isRunning = true;
 			}
 
-			// 创建画布
 			createCanvas() {
 				this.canvas = document.createElement('canvas');
 				this.canvas.height = windowHeight;
@@ -201,69 +152,32 @@ const config = sakuraConfig;
 				document.body.appendChild(this.canvas);
 				this.ctx = this.canvas.getContext('2d');
 
-				// 监听窗口大小变化
 				this._boundHandleResize = this.handleResize.bind(this);
 				window.addEventListener('resize', this._boundHandleResize);
 			}
 
-			// 创建樱花列表
-			createSakuraList() {
-				if (!this.img || !this.ctx) return;
-
-				this.sakuraList = new SakuraList();
-				const limitArray = new Array(this.config.sakuraNum).fill(this.config.limitTimes);
-
-				for (let i = 0; i < this.config.sakuraNum; i++) {
-					const randomX = getRandom('x', this.config);
-					const randomY = getRandom('y', this.config);
-					const randomS = getRandom('s', this.config);
-					const randomR = getRandom('r', this.config);
-					const randomA = getRandom('a', this.config);
-					const randomFnx = getRandom('fnx', this.config);
-					const randomFny = getRandom('fny', this.config);
-					const randomFnR = getRandom('fnr', this.config);
-					const randomFnA = getRandom('fna', this.config);
-
-					const sakura = new Sakura(
-						randomX,
-						randomY,
-						randomS,
-						randomR,
-						randomA,
-						{
-							x: randomFnx,
-							y: randomFny,
-							r: randomFnR,
-							a: randomFnA,
-						},
-						i,
-						this.img,
-						limitArray,
-						this.config
-					);
-
-					sakura.draw(this.ctx);
-					this.sakuraList.push(sakura);
+			createParticles() {
+				this.particles = [];
+				const num = this.config.sakuraNum || 60;
+				for (let i = 0; i < num; i++) {
+					this.particles.push(new Particle(this.config));
 				}
 			}
 
-			// 开始动画
 			startAnimation() {
-				if (!this.ctx || !this.canvas || !this.sakuraList) return;
-
+				if (!this.ctx || !this.canvas) return;
 				const animate = () => {
-					if (!this.ctx || !this.canvas || !this.sakuraList) return;
-
+					if (!this.ctx || !this.canvas) return;
 					this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-					this.sakuraList.update();
-					this.sakuraList.draw(this.ctx);
+					for (let i = 0; i < this.particles.length; i++) {
+						this.particles[i].update();
+						this.particles[i].draw(this.ctx);
+					}
 					this.animationId = requestAnimationFrame(animate);
 				};
-
 				this.animationId = requestAnimationFrame(animate);
 			}
 
-			// 处理窗口大小变化
 			handleResize() {
 				windowWidth = window.innerWidth;
 				windowHeight = window.innerHeight;
@@ -273,26 +187,23 @@ const config = sakuraConfig;
 				}
 			}
 
-			// 停止樱花特效
 			stop() {
 				if (this.animationId) {
 					cancelAnimationFrame(this.animationId);
 					this.animationId = null;
 				}
-
 				if (this.canvas) {
 					document.body.removeChild(this.canvas);
 					this.canvas = null;
 				}
-
 				if (this._boundHandleResize) {
 					window.removeEventListener('resize', this._boundHandleResize);
 					this._boundHandleResize = null;
 				}
+				this.particles = [];
 				this.isRunning = false;
 			}
 
-			// 切换樱花特效
 			toggle() {
 				if (this.isRunning) {
 					this.stop();
@@ -301,7 +212,6 @@ const config = sakuraConfig;
 				}
 			}
 
-			// 更新配置
 			updateConfig(newConfig) {
 				const wasRunning = this.isRunning;
 				if (wasRunning) {
@@ -313,17 +223,15 @@ const config = sakuraConfig;
 				}
 			}
 
-			// 获取运行状态
 			getIsRunning() {
 				return this.isRunning;
 			}
 		}
 
-		// 创建全局樱花管理器实例
+		// 全局实例
 		let globalSakuraManager = null;
 		window.sakuraManager = null;
 
-		// 初始化樱花特效
 		function initSakura(config) {
 			if (globalSakuraManager) {
 				globalSakuraManager.updateConfig(config);
@@ -336,26 +244,21 @@ const config = sakuraConfig;
 			}
 		}
 
-		// 樱花特效初始化
+		// 初始化(只执行一次)
 		(function() {
-			// 全局标记，确保樱花特效只初始化一次
 			if (window.sakuraInitialized) {
 				return;
 			}
-			
-			// 初始化樱花特效的函数
 			const setupSakura = () => {
 				if (window.sakuraInitialized) return;
-				// 检查用户是否在设置中关闭了樱花特效
+				// 读取用户在设置面板中的开关偏好
 				var storedEnabled = localStorage.getItem("sakuraEnabled");
 				var isEnabled = storedEnabled !== null ? storedEnabled === "true" : sakuraConfig.enable;
-				// 创建管理器并根据用户偏好决定是否启动
 				var cfg = Object.assign({}, sakuraConfig, { enable: isEnabled });
 				initSakura(cfg);
 				window.sakuraInitialized = true;
 			};
-			
-			// 页面加载完成后初始化樱花特效
+
 			if (document.readyState === 'loading') {
 				document.addEventListener('DOMContentLoaded', setupSakura);
 			} else {
@@ -363,7 +266,7 @@ const config = sakuraConfig;
 			}
 		})();
 
-		// 监听设置面板的樱花特效切换事件
+		// 监听设置面板的特效切换事件
 		window.addEventListener('sakuraToggle', function(e) {
 			var enabled = e.detail.enabled;
 			var mgr = window.sakuraManager;
