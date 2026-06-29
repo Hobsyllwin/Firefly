@@ -74,7 +74,7 @@ export const siteConfig: SiteConfig = {
 		logo: {
 			type: "image",
 			value: "assets/images/WeiduoIndexIcon_1.png",
-			alt: "🍀",
+			alt: "🩹",
 		},
 		// 导航栏标题
 		title: "维多邦 - Weiduopia",
