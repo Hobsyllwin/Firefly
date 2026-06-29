@@ -1,0 +1,176 @@
+---
+// 流星特效 —— 白色简约线条，由粗到细，从右上方坠落到左下方
+// 独立 canvas，z-index 置于背景图之上、文章内容之下，pointer-events:none 不遮挡交互
+---
+
+<script is:inline>
+	(function () {
+		if (window.meteorInitialized) return;
+		window.meteorInitialized = true;
+
+		// ===== 可调参数 =====
+		const COLOR = "255,255,255";      // 流星颜色(白)
+		const MAX_CONCURRENT = 2;          // 同时最多几颗
+		const SPAWN_MIN = 2600;            // 两颗之间最短间隔(ms)
+		const SPAWN_MAX = 6500;            // 最长间隔(ms)
+		const SPEED_MIN = 11;              // 速度(px/帧)
+		const SPEED_MAX = 18;
+		const LEN_MIN = 160;               // 拖尾长度(px)
+		const LEN_MAX = 320;
+		const WIDTH_MIN = 1.8;             // 头部宽度(px，决定"粗")
+		const WIDTH_MAX = 3.2;
+		const ANGLE_MIN = 26;              // 坠落角度(度，相对水平，向左下)
+		const ANGLE_MAX = 42;
+		const Z_INDEX = 15;                // 与背景图同层、文章之下
+		// ====================
+
+		let windowWidth = window.innerWidth;
+		let windowHeight = window.innerHeight;
+		let canvas = null;
+		let ctx = null;
+		let animationId = null;
+		let meteors = [];
+
+		const rand = (a, b) => a + Math.random() * (b - a);
+
+		function spawnMeteor(m) {
+			const angle = rand(ANGLE_MIN, ANGLE_MAX) * (Math.PI / 180);
+			// 方向：向左下(dx<0, dy>0)
+			m.dirX = -Math.cos(angle);
+			m.dirY = Math.sin(angle);
+			m.speed = rand(SPEED_MIN, SPEED_MAX);
+			m.vx = m.dirX * m.speed;
+			m.vy = m.dirY * m.speed;
+			m.len = rand(LEN_MIN, LEN_MAX);
+			m.width = rand(WIDTH_MIN, WIDTH_MAX);
+			m.baseAlpha = rand(0.6, 0.95);
+			// 头部起点：屏幕右上方(含屏幕外一点)
+			m.x = rand(windowWidth * 0.45, windowWidth + 120);
+			m.y = rand(-120, windowHeight * 0.25);
+			m.dist = 0;
+			m.maxDist = Math.hypot(windowWidth, windowHeight) * 1.1;
+			m.active = true;
+		}
+
+		function fade(p) {
+			// 入场淡入(前12%)，离场淡出(后18%)
+			if (p < 0.12) return p / 0.12;
+			if (p > 0.82) return Math.max(0, (1 - p) / 0.18);
+			return 1;
+		}
+
+		function updateMeteor(m, now) {
+			if (!m.active) {
+				if (now >= m.spawnAt) spawnMeteor(m);
+				return;
+			}
+			m.x += m.vx;
+			m.y += m.vy;
+			m.dist += m.speed;
+			if (
+				m.x < -m.len - 60 ||
+				m.y > windowHeight + m.len + 60 ||
+				m.dist > m.maxDist
+			) {
+				m.active = false;
+				m.spawnAt = now + rand(SPAWN_MIN, SPAWN_MAX);
+			}
+		}
+
+		function drawMeteor(m) {
+			if (!m.active) return;
+			const p = m.dist / m.maxDist;
+			const alpha = m.baseAlpha * fade(p);
+			if (alpha <= 0) return;
+
+			const hx = m.x;
+			const hy = m.y;
+			const tx = hx - m.dirX * m.len; // 拖尾(右上方向)
+			const ty = hy - m.dirY * m.len;
+			const px = -m.dirY; // 垂直方向
+			const py = m.dirX;
+			const hw = m.width / 2;
+
+			// 拖尾：头部粗且亮 → 尾部细且透明(三角形 + 渐变)
+			const g = ctx.createLinearGradient(hx, hy, tx, ty);
+			g.addColorStop(0, `rgba(${COLOR},${alpha})`);
+			g.addColorStop(1, `rgba(${COLOR},0)`);
+			ctx.fillStyle = g;
+			ctx.beginPath();
+			ctx.moveTo(hx + px * hw, hy + py * hw);
+			ctx.lineTo(hx - px * hw, hy - py * hw);
+			ctx.lineTo(tx, ty);
+			ctx.closePath();
+			ctx.fill();
+
+			// 头部亮点 + 微辉光
+			ctx.save();
+			ctx.shadowBlur = 8;
+			ctx.shadowColor = `rgba(${COLOR},${alpha})`;
+			ctx.fillStyle = `rgba(${COLOR},${alpha})`;
+			ctx.beginPath();
+			ctx.arc(hx, hy, hw * 0.95, 0, Math.PI * 2);
+			ctx.fill();
+			ctx.restore();
+		}
+
+		function createCanvas() {
+			canvas = document.createElement("canvas");
+			canvas.width = windowWidth;
+			canvas.height = windowHeight;
+			canvas.setAttribute("id", "canvas_meteor");
+			canvas.setAttribute(
+				"style",
+				`position: fixed; left: 0; top: 0; pointer-events: none; z-index: ${Z_INDEX}; transform: translateZ(0);`,
+			);
+			document.body.appendChild(canvas);
+			ctx = canvas.getContext("2d");
+			window.addEventListener("resize", handleResize);
+		}
+
+		function handleResize() {
+			windowWidth = window.innerWidth;
+			windowHeight = window.innerHeight;
+			if (canvas) {
+				canvas.width = windowWidth;
+				canvas.height = windowHeight;
+			}
+		}
+
+		function start() {
+			createCanvas();
+			const now = performance.now();
+			meteors = [];
+			for (let i = 0; i < MAX_CONCURRENT; i++) {
+				meteors.push({
+					active: false,
+					spawnAt: now + rand(0, SPAWN_MAX),
+				});
+			}
+			const animate = () => {
+				if (!ctx || !canvas) return;
+				const t = performance.now();
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				for (let i = 0; i < meteors.length; i++) {
+					updateMeteor(meteors[i], t);
+					drawMeteor(meteors[i]);
+				}
+				animationId = requestAnimationFrame(animate);
+			};
+			animationId = requestAnimationFrame(animate);
+		}
+
+		// 尊重"减少动态效果"无障碍偏好
+		const reduceMotion = window.matchMedia(
+			"(prefers-reduced-motion: reduce)",
+		).matches;
+
+		if (!reduceMotion) {
+			if (document.readyState === "loading") {
+				document.addEventListener("DOMContentLoaded", start);
+			} else {
+				start();
+			}
+		}
+	})();
+</script>
