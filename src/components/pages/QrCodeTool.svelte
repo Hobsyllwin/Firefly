@@ -3,6 +3,7 @@ import QRCode from "qrcode";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import Icon from "@/components/common/Icon.svelte";
+import ToolCard from "./ToolCard.svelte";
 
 let content = "";
 let qrDataUrl = "";
@@ -44,21 +45,11 @@ const download = () => {
 };
 </script>
 
-<div class="card-base px-6 py-6 md:px-9 md:py-6 rounded-(--radius-large) h-full">
-    <div class="mb-4">
-        <div class="flex items-center gap-3 mb-3">
-            <div class="h-8 w-8 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70">
-                <Icon icon="material-symbols:qr-code-2-rounded" class="text-[1.5rem]"></Icon>
-            </div>
-            <div class="text-2xl font-bold text-90">
-                {i18n(I18nKey.toolsQrCode)}
-            </div>
-        </div>
-        <p class="text-sm text-50">
-            {i18n(I18nKey.toolsQrCodeDescription)}
-        </p>
-    </div>
-
+<ToolCard
+    icon="material-symbols:qr-code-2-rounded"
+    title={i18n(I18nKey.toolsQrCode)}
+    description={i18n(I18nKey.toolsQrCodeDescription)}
+>
     <textarea
         class="block w-full p-3 text-sm bg-transparent border border-black/10 dark:border-white/10 rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-(--primary) hover:border-black/20 dark:hover:border-white/20 text-75 placeholder:opacity-50 transition-colors outline-hidden resize-none"
         rows="3"
@@ -86,4 +77,4 @@ const download = () => {
             </p>
         {/if}
     </div>
-</div>
+</ToolCard>

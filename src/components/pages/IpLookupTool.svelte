@@ -3,6 +3,7 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { onMount } from "svelte";
 import Icon from "@/components/common/Icon.svelte";
+import ToolCard from "./ToolCard.svelte";
 
 interface IpInfo {
 	ip: string;
@@ -45,21 +46,11 @@ onMount(() => {
 });
 </script>
 
-<div class="card-base px-6 py-6 md:px-9 md:py-6 rounded-(--radius-large) h-full">
-    <div class="mb-4">
-        <div class="flex items-center gap-3 mb-3">
-            <div class="h-8 w-8 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70">
-                <Icon icon="material-symbols:travel-explore-rounded" class="text-[1.5rem]"></Icon>
-            </div>
-            <div class="text-2xl font-bold text-90">
-                {i18n(I18nKey.toolsIpLookup)}
-            </div>
-        </div>
-        <p class="text-sm text-50">
-            {i18n(I18nKey.toolsIpLookupDescription)}
-        </p>
-    </div>
-
+<ToolCard
+    icon="material-symbols:travel-explore-rounded"
+    title={i18n(I18nKey.toolsIpLookup)}
+    description={i18n(I18nKey.toolsIpLookupDescription)}
+>
     <div class="flex gap-2">
         <input
             type="text"
@@ -110,4 +101,4 @@ onMount(() => {
             </div>
         {/if}
     </div>
-</div>
+</ToolCard>
