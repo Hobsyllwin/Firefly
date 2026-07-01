@@ -14,7 +14,7 @@ let expanded = defaultExpanded;
 <div class="card-base rounded-(--radius-large) h-fit overflow-hidden">
     <button
         type="button"
-        class="w-full flex items-center gap-3 px-6 py-6 md:px-9 md:py-6 text-left transition-colors hover:bg-black/5 dark:hover:bg-white/5"
+        class="tool-header w-full flex items-center gap-3 px-6 py-6 md:px-9 md:py-6 text-left"
         onclick={() => (expanded = !expanded)}
         aria-expanded={expanded}
         title={expanded ? i18n(I18nKey.collapse) : i18n(I18nKey.more)}
@@ -30,8 +30,8 @@ let expanded = defaultExpanded;
         </div>
         <Icon
             icon="material-symbols:keyboard-arrow-down-rounded"
-            class="text-4xl text-(--primary) shrink-0 transition-transform duration-300"
-            style={expanded ? "transform: rotate(180deg);" : ""}
+            class="text-(--primary) shrink-0 transition-transform duration-300"
+            style={`font-size: 4.5rem;${expanded ? " transform: rotate(180deg);" : ""}`}
         />
     </button>
     {#if expanded}
@@ -40,3 +40,37 @@ let expanded = defaultExpanded;
         </div>
     {/if}
 </div>
+
+<style>
+    .tool-header {
+        position: relative;
+        overflow: hidden;
+        transition:
+            background 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+    .tool-header::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            120deg,
+            transparent 35%,
+            color-mix(in srgb, var(--primary) 22%, transparent) 50%,
+            transparent 65%
+        );
+        transform: translateX(-140%);
+        pointer-events: none;
+    }
+
+    .tool-header:hover {
+        background: color-mix(in srgb, var(--primary) 8%, transparent);
+        box-shadow: inset 0 0 20px color-mix(in srgb, var(--primary) 20%, transparent);
+    }
+
+    .tool-header:hover::before {
+        transform: translateX(140%);
+        transition: transform 0.6s ease;
+    }
+</style>
