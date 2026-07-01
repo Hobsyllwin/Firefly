@@ -33,6 +33,16 @@ export const friendsConfig: FriendLink[] = [
 		enabled: true, // 是否启用
 	},
 	{
+		title: "WindCrazy",
+		imgurl:
+			"/assets/images/friend/avatar_1.png",
+		desc: "wind crazy",
+		siteurl: "https://windcrazy123.github.io/",
+		tags: ["Blog"],
+		weight: 11, // 权重，数字越大排序越靠前
+		enabled: true, // 是否启用
+	},
+	{
 		title: "Firefly Docs",
 		imgurl: "https://docs-firefly.cuteleaf.cn/logo.png",
 		desc: "Firefly主题模板文档",
