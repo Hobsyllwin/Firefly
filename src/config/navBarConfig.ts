@@ -39,6 +39,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 留言板
 	links.push(LinkPresets.Guestbook);
 
+	// 工具
+	links.push(LinkPresets.Tools);
+
 	// 我的及其子菜单
 	links.push({
 		name: "我的",
@@ -187,6 +190,12 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/anime/",
 		icon: "material-symbols:live-tv",
 		pageKey: "anime",
+	},
+	Tools: {
+		name: "工具",
+		url: "/tools/",
+		icon: "material-symbols:build-rounded",
+		pageKey: "tools",
 	},
 };
 

@@ -379,6 +379,25 @@ export const ja: Translation = {
 	[Key.galleryBackToAlbums]: "アルバム一覧に戻る",
 	[Key.searchAlbums]: "アルバムを検索...",
 
+	// ツールページ
+	[Key.tools]: "ツール",
+	[Key.toolsDescription]: "ちょっと便利な小ツール集",
+	[Key.toolsQrCode]: "QRコード生成",
+	[Key.toolsQrCodeDescription]: "テキストまたはリンクを入力してQRコードを生成",
+	[Key.toolsQrCodePlaceholder]: "テキストまたはリンクを入力...",
+	[Key.toolsQrCodeDownload]: "QRコードをダウンロード",
+	[Key.toolsQrCodeEmpty]: "内容を入力するとQRコードが自動生成されます",
+	[Key.toolsIpLookup]: "IPアドレス検索",
+	[Key.toolsIpLookupDescription]: "IPアドレスの所在地とプロバイダ情報を検索",
+	[Key.toolsIpLookupPlaceholder]: "IPアドレスを入力、空欄で自分のIPを検索",
+	[Key.toolsIpLookupQuery]: "検索",
+	[Key.toolsIpLookupMyIp]: "自分のIPを検索",
+	[Key.toolsIpLookupLoading]: "検索中...",
+	[Key.toolsIpLookupError]: "検索に失敗しました。しばらくしてから再試行してください",
+	[Key.toolsIpLookupIsp]: "プロバイダ",
+	[Key.toolsIpLookupLocation]: "所在地",
+	[Key.toolsIpLookupTimezone]: "タイムゾーン",
+
 	// パスワード保護
 	[Key.passwordProtected]: "パスワード保護",
 	[Key.passwordProtectedDesc]:

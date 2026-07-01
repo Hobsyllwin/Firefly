@@ -371,6 +371,25 @@ export const zh_CN: Translation = {
 	[Key.galleryBackToAlbums]: "返回相册列表",
 	[Key.searchAlbums]: "搜索相簿...",
 
+	// 工具页面
+	[Key.tools]: "工具",
+	[Key.toolsDescription]: "一些顺手好用的小工具",
+	[Key.toolsQrCode]: "二维码生成",
+	[Key.toolsQrCodeDescription]: "输入文本或链接，实时生成二维码",
+	[Key.toolsQrCodePlaceholder]: "输入文本或链接...",
+	[Key.toolsQrCodeDownload]: "下载二维码",
+	[Key.toolsQrCodeEmpty]: "输入内容后将自动生成二维码",
+	[Key.toolsIpLookup]: "IP 归属地查询",
+	[Key.toolsIpLookupDescription]: "查询 IP 地址的地理位置和运营商信息",
+	[Key.toolsIpLookupPlaceholder]: "输入 IP 地址，留空则查询本机 IP",
+	[Key.toolsIpLookupQuery]: "查询",
+	[Key.toolsIpLookupMyIp]: "查询我的 IP",
+	[Key.toolsIpLookupLoading]: "查询中...",
+	[Key.toolsIpLookupError]: "查询失败，请稍后重试",
+	[Key.toolsIpLookupIsp]: "运营商",
+	[Key.toolsIpLookupLocation]: "地理位置",
+	[Key.toolsIpLookupTimezone]: "时区",
+
 	// 密码保护
 	[Key.passwordProtected]: "密码保护",
 	[Key.passwordProtectedDesc]: "此内容已被密码保护，请输入密码查看。",

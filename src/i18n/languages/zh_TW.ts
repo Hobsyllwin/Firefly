@@ -373,6 +373,25 @@ export const zh_TW: Translation = {
 	[Key.galleryBackToAlbums]: "返回相簿列表",
 	[Key.searchAlbums]: "搜尋相簿...",
 
+	// 工具頁面
+	[Key.tools]: "工具",
+	[Key.toolsDescription]: "一些順手好用的小工具",
+	[Key.toolsQrCode]: "二維碼生成",
+	[Key.toolsQrCodeDescription]: "輸入文字或連結，即時生成二維碼",
+	[Key.toolsQrCodePlaceholder]: "輸入文字或連結...",
+	[Key.toolsQrCodeDownload]: "下載二維碼",
+	[Key.toolsQrCodeEmpty]: "輸入內容後將自動生成二維碼",
+	[Key.toolsIpLookup]: "IP 歸屬地查詢",
+	[Key.toolsIpLookupDescription]: "查詢 IP 位址的地理位置和業者資訊",
+	[Key.toolsIpLookupPlaceholder]: "輸入 IP 位址，留空則查詢本機 IP",
+	[Key.toolsIpLookupQuery]: "查詢",
+	[Key.toolsIpLookupMyIp]: "查詢我的 IP",
+	[Key.toolsIpLookupLoading]: "查詢中...",
+	[Key.toolsIpLookupError]: "查詢失敗，請稍後重試",
+	[Key.toolsIpLookupIsp]: "業者",
+	[Key.toolsIpLookupLocation]: "地理位置",
+	[Key.toolsIpLookupTimezone]: "時區",
+
 	// 密碼保護
 	[Key.passwordProtected]: "密碼保護",
 	[Key.passwordProtectedDesc]: "此內容已被密碼保護，請輸入密碼查看。",

@@ -380,6 +380,26 @@ export const en: Translation = {
 	[Key.galleryBackToAlbums]: "Back to albums",
 	[Key.searchAlbums]: "Search albums...",
 
+	// Tools Page
+	[Key.tools]: "Tools",
+	[Key.toolsDescription]: "A few handy little tools",
+	[Key.toolsQrCode]: "QR Code Generator",
+	[Key.toolsQrCodeDescription]: "Enter text or a link to generate a QR code",
+	[Key.toolsQrCodePlaceholder]: "Enter text or link...",
+	[Key.toolsQrCodeDownload]: "Download QR Code",
+	[Key.toolsQrCodeEmpty]: "A QR code will be generated once you type something",
+	[Key.toolsIpLookup]: "IP Lookup",
+	[Key.toolsIpLookupDescription]:
+		"Look up the geographic location and ISP of an IP address",
+	[Key.toolsIpLookupPlaceholder]: "Enter an IP, leave blank for your own",
+	[Key.toolsIpLookupQuery]: "Query",
+	[Key.toolsIpLookupMyIp]: "Query My IP",
+	[Key.toolsIpLookupLoading]: "Querying...",
+	[Key.toolsIpLookupError]: "Query failed, please try again later",
+	[Key.toolsIpLookupIsp]: "ISP",
+	[Key.toolsIpLookupLocation]: "Location",
+	[Key.toolsIpLookupTimezone]: "Timezone",
+
 	// Password Protection
 	[Key.passwordProtected]: "Password Protected",
 	[Key.passwordProtectedDesc]:

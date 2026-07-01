@@ -367,6 +367,25 @@ enum I18nKey {
 	galleryBackToAlbums = "galleryBackToAlbums",
 	searchAlbums = "searchAlbums",
 
+	// 工具页面
+	tools = "tools",
+	toolsDescription = "toolsDescription",
+	toolsQrCode = "toolsQrCode",
+	toolsQrCodeDescription = "toolsQrCodeDescription",
+	toolsQrCodePlaceholder = "toolsQrCodePlaceholder",
+	toolsQrCodeDownload = "toolsQrCodeDownload",
+	toolsQrCodeEmpty = "toolsQrCodeEmpty",
+	toolsIpLookup = "toolsIpLookup",
+	toolsIpLookupDescription = "toolsIpLookupDescription",
+	toolsIpLookupPlaceholder = "toolsIpLookupPlaceholder",
+	toolsIpLookupQuery = "toolsIpLookupQuery",
+	toolsIpLookupMyIp = "toolsIpLookupMyIp",
+	toolsIpLookupLoading = "toolsIpLookupLoading",
+	toolsIpLookupError = "toolsIpLookupError",
+	toolsIpLookupIsp = "toolsIpLookupIsp",
+	toolsIpLookupLocation = "toolsIpLookupLocation",
+	toolsIpLookupTimezone = "toolsIpLookupTimezone",
+
 	// 密码保护
 	passwordProtected = "passwordProtected",
 	passwordProtectedDesc = "passwordProtectedDesc",

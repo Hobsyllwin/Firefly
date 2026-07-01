@@ -218,6 +218,9 @@ export default defineConfig({
 				if (pathname === "/anime/" && !siteConfig.pages.anime) {
 					return false;
 				}
+				if (pathname === "/tools/" && !siteConfig.pages.tools) {
+					return false;
+				}
 
 				return true;
 			},

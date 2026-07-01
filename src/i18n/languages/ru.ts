@@ -382,6 +382,26 @@ export const ru: Translation = {
 	[Key.galleryBackToAlbums]: "Вернуться к альбомам",
 	[Key.searchAlbums]: "Поиск альбомов...",
 
+	// Страница инструментов
+	[Key.tools]: "Инструменты",
+	[Key.toolsDescription]: "Несколько удобных небольших инструментов",
+	[Key.toolsQrCode]: "Генератор QR-кода",
+	[Key.toolsQrCodeDescription]: "Введите текст или ссылку, чтобы сгенерировать QR-код",
+	[Key.toolsQrCodePlaceholder]: "Введите текст или ссылку...",
+	[Key.toolsQrCodeDownload]: "Скачать QR-код",
+	[Key.toolsQrCodeEmpty]: "QR-код появится после ввода текста",
+	[Key.toolsIpLookup]: "Поиск по IP",
+	[Key.toolsIpLookupDescription]:
+		"Узнайте географическое положение и провайдера IP-адреса",
+	[Key.toolsIpLookupPlaceholder]: "Введите IP, оставьте пустым для своего",
+	[Key.toolsIpLookupQuery]: "Поиск",
+	[Key.toolsIpLookupMyIp]: "Узнать свой IP",
+	[Key.toolsIpLookupLoading]: "Поиск...",
+	[Key.toolsIpLookupError]: "Ошибка запроса, попробуйте позже",
+	[Key.toolsIpLookupIsp]: "Провайдер",
+	[Key.toolsIpLookupLocation]: "Местоположение",
+	[Key.toolsIpLookupTimezone]: "Часовой пояс",
+
 	// Защита паролем
 	[Key.passwordProtected]: "Защищено паролем",
 	[Key.passwordProtectedDesc]:
