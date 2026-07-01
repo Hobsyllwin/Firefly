@@ -6,15 +6,15 @@ import Icon from "@/components/common/Icon.svelte";
 export let icon: string;
 export let title: string;
 export let description = "";
-export let defaultExpanded = true;
+export let defaultExpanded = false;
 
 let expanded = defaultExpanded;
 </script>
 
-<div class="card-base rounded-(--radius-large) h-fit">
+<div class="card-base rounded-(--radius-large) h-fit overflow-hidden">
     <button
         type="button"
-        class="w-full flex items-center gap-3 px-6 py-6 md:px-9 md:py-6 text-left"
+        class="w-full flex items-center gap-3 px-6 py-6 md:px-9 md:py-6 text-left transition-colors hover:bg-black/5 dark:hover:bg-white/5"
         onclick={() => (expanded = !expanded)}
         aria-expanded={expanded}
         title={expanded ? i18n(I18nKey.collapse) : i18n(I18nKey.more)}
@@ -30,7 +30,7 @@ let expanded = defaultExpanded;
         </div>
         <Icon
             icon="material-symbols:keyboard-arrow-down-rounded"
-            class="text-2xl text-50 shrink-0 transition-transform duration-300"
+            class="text-4xl text-(--primary) shrink-0 transition-transform duration-300"
             style={expanded ? "transform: rotate(180deg);" : ""}
         />
     </button>
