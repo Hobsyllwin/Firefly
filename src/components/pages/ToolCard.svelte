@@ -28,11 +28,19 @@ let expanded = defaultExpanded;
                 <p class="text-sm text-50 mt-1">{description}</p>
             {/if}
         </div>
-        <Icon
-            icon="material-symbols:keyboard-arrow-down-rounded"
-            class="text-(--primary) shrink-0 transition-transform duration-300"
-            style={`font-size: 4.5rem;${expanded ? " transform: rotate(180deg);" : ""}`}
-        />
+        {#if expanded}
+            <Icon
+                icon="material-symbols:radio-button-checked"
+                class="text-50 shrink-0 opacity-60"
+                style="font-size: 1rem;"
+            />
+        {:else}
+            <Icon
+                icon="material-symbols:radio-button-unchecked"
+                class="text-50 shrink-0 opacity-60"
+                style="font-size: 1rem;"
+            />
+        {/if}
     </button>
     {#if expanded}
         <div class="px-6 pb-6 md:px-9 md:pb-6">
