@@ -206,7 +206,39 @@ const relatedPosts = await getRelatedPosts(entry, 5);
             </div>
           </div>
         )}
+        {siteConfig.post.busuanzi && (
+          <div class="flex flex-row items-center">
+            <div
+              class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2"
+            >
+              <Icon is:inline name="material-symbols:visibility-outline-rounded" />
+            </div>
+            <div class="text-sm">
+              <span id="busuanzi_value_page_pv">{i18n(I18nKey.pageViewsLoading)}</span>
+              {" " + i18n(I18nKey.pageViews)}
+            </div>
+          </div>
+        )}
       </div>
+
+      {siteConfig.post.busuanzi && (
+        <script is:inline>
+          (function () {
+            function loadBusuanzi() {
+              const old = document.getElementById("busuanzi-script");
+              if (old) old.remove();
+              const s = document.createElement("script");
+              s.id = "busuanzi-script";
+              s.src = "https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
+              document.body.appendChild(s);
+            }
+            loadBusuanzi();
+            document.addEventListener("swup:contentReplaced", () => {
+              setTimeout(loadBusuanzi, 100);
+            });
+          })();
+        </script>
+      )}
 
       <!-- title -->
       <div class="relative onload-animation">

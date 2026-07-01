@@ -125,6 +125,8 @@ export type SiteConfig = {
 		sharePoster?: boolean;
 		// OpenGraph图片功能
 		generateOgImages: boolean;
+		// 是否显示文章访问量统计（基于不蒜子 busuanzi，无需自建后端）
+		busuanzi?: boolean;
 	};
 
 	// bangumi配置

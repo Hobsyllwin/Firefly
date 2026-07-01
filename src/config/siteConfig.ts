@@ -158,6 +158,8 @@ export const siteConfig: SiteConfig = {
 		sharePoster: true,
 		// OpenGraph图片功能，注意开启后要渲染很长时间，不建议本地调试的时候开启
 		generateOgImages: false,
+		// 是否显示文章访问量统计（基于不蒜子 busuanzi，无需自建后端，Giscus 等无内置统计的评论系统也能用）
+		busuanzi: true,
 	},
 
 	// bangumi配置
